@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* НАСТРОЙКИ СТРАНИЦЫ А4 */
+        @page {
+            size: A4;
+            margin: 20mm 15mm 20mm 15mm;
+            @bottom-center {
+                content: "Seite " counter(page) " | {{ bank_name }} – Vorabinformation #2690497";
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 8pt;
+                color: #888;
+            }
+        }
+
+        /* БАЗОВЫЕ СТИЛИ И ТИПОГРАФИКА (Стиль под моноширинный/деловой шрифт) */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            color: #222;
+            line-height: 1.4;
+        }
+
+        /* ФОНОВЫЙ ВОДЯНОЙ ЗНАК (по желанию можно добавить логотип на фон) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 30%; left: 20%; right: 20%; bottom: 30%;
+            z-index: -1;
+            background-image: url('file://{{ logo_santa }}');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.03; /* Очень прозрачно */
+        }
+
+        /* ШАПКА И ЛОГОТИПЫ */
+        .header-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .header-table td { vertical-align: middle; }
+        .logo-img { max-height: 65px; }
+
+        h1 { font-size: 16pt; color: #0E2A47; border-bottom: 2px solid #0E2A47; padding-bottom: 5px; margin-bottom: 5px; }
+        h2 { font-size: 12pt; color: #0E2A47; margin-top: 25px; margin-bottom: 10px; }
+        .subtext { font-size: 9pt; color: #555; }
+        .right-text { text-align: right; font-size: 9pt; }
+
+        /* ИНФОБЛОК СТАТУСА (Заменяет синюю таблицу из старого кода) */
+        .status-box {
+            background-color: #EEF3FF;
+            border: 1px solid #96A6C8;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .status-box table { width: 100%; border-collapse: collapse; }
+        .status-box td { padding: 4px 0; vertical-align: top; }
+        .status-box td:first-child { width: 130px; font-weight: bold; color: #0E2A47; }
+
+        /* ТАБЛИЦЫ ДАННЫХ */
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .data-table th, .data-table td {
+            border: 1px solid #ccc;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .data-table th { background-color: #ececec; font-weight: bold; width: 40%; }
+        
+        .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .summary-table th, .summary-table td {
+            border: 1px solid #ccc; padding: 8px 10px; text-align: left;
+        }
+        .summary-table th { background-color: #f5f5f5; width: 40%; font-weight: normal; }
+
+        /* СПИСКИ */
+        ul { margin-top: 5px; margin-bottom: 15px; padding-left: 20px; }
+        li { margin-bottom: 4px; }
+
+        /* ПОДПИСИ */
+        .signatures { width: 100%; margin-top: 40px; page-break-inside: avoid; }
+        .signatures td { width: 33.3%; text-align: center; vertical-align: bottom; padding: 0 10px; }
+        .sig-line { border-bottom: 1px solid #000; height: 60px; margin-bottom: 5px; position: relative; }
+        .sig-img { max-height: 50px; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
+
+        /* ГРАФИК ПЛАТЕЖЕЙ */
+        .schedule-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: 15px; }
+        .schedule-table thead { display: table-header-group; }
+        .schedule-table tr { page-break-inside: avoid; }
+        .schedule-table th { background-color: #0E2A47; color: white; padding: 6px; text-align: right; border: 1px solid #0E2A47;}
+        .schedule-table td { padding: 6px; border: 1px solid #ddd; text-align: right; }
+        .schedule-table th:first-child, .schedule-table td:first-child { text-align: center; }
+        .schedule-table tr:nth-child(even) { background-color: #f9f9f9; }
+
+        .page-break { page-break-before: always; }
+    </style>
+</head>
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td style="text-align: left;"><img src="file://{{ logo_higobi }}" class="logo-img"></td>
+            <td style="text-align: center;"><img src="file://{{ logo_partner1 }}" class="logo-img"></td>
+            <td style="text-align: right;"><img src="file://{{ logo_partner2 }}" class="logo-img"></td>
+        </tr>
+    </table>
+
+    <h1>{{ bank_name }} – Vorabinformation / Vorvertrag #2690497</h1>
+    <div class="subtext">
+        Vermittlung: {{ company_legal }}, {{ company_addr }}<br>
+        {{ company_reg }}<br>
+        Kontakt: {{ company_contact }} | E-Mail: {{ company_email }} | Web: {{ company_web }}
+    </div>
+    
+    <div class="right-text" style="margin-top: 10px; margin-bottom: 15px;">
+        Kunde: <b>{{ client }}</b><br>
+        Erstellt: {{ date_now }}
+    </div>
+
+    <div class="status-box">
+        <table>
+            <tr><td>Status der Anfrage:</td><td><b>BESTÄTIGT</b> (Bankbestätigung liegt vor)</td></tr>
+            <tr><td>Dokument-Typ:</td><td><b>Bestätigter Vertrag</b></td></tr>
+            <tr><td>Noch ausstehend:</td><td>Unterzeichnung dieses Dokuments, Zahlung der Vermittlungsvergütung, Versand des Tilgungsplans</td></tr>
+            <tr><td>Auszahlung:</td><td>nur nach Unterzeichnung des Vertrags und nach Zahlung der Vermittlungsvergütung ({{ service_fee }}).</td></tr>
+        </table>
+    </div>
+
+    <table class="data-table">
+        <tr><th>Parameter</th><td style="background-color: #ececec; font-weight: bold;">Details</td></tr>
+        <tr><th>Nettodarlehensbetrag</th><td><b>{{ amount }}</b></td></tr>
+        <tr><th>Sollzinssatz (p.a.)</th><td>{{ tan }} %</td></tr>
+        <tr><th>Effektiver Jahreszins (p.a.)</th><td>{{ eff }} %</td></tr>
+        <tr><th>Laufzeit</th><td>{{ term }} Monate (max. 84)</td></tr>
+        <tr><th>Monatsrate*</th><td><b>{{ monthly_payment }}</b></td></tr>
+        <tr><th>Bearbeitungsgebühr</th><td>0 €</td></tr>
+        <tr><th>Einzugskosten</th><td>0 €</td></tr>
+        <tr><th>Verwaltungskosten</th><td>0 €</td></tr>
+        <tr><th>Versicherungsprämie (falls angefordert)</th><td>285 €</td></tr>
+        <tr><th>Auszahlung</th><td>30–60 Min nach Unterzeichnung und Zahlung ({{ service_fee }})</td></tr>
+    </table>
+    <div style="font-size: 8pt; margin-top: -15px; margin-bottom: 20px;">*Monatsrate berechnet zum Datum dieses Angebots.</div>
+
+    <h2>Vorteile</h2>
+    <ul>
+        <li>Möglichkeit, bis zu 3 Raten auszusetzen.</li>
+        <li>Vorzeitige Rückzahlung ohne Strafgebühren.</li>
+        <li>Zinsreduktion –0,10 %-Pkt. alle 12 pünktlichen Monate (bis mind. 5,95 %).</li>
+        <li>Ratenpause bei Arbeitsverlust (vorbehaltlich Bankzustimmung).</li>
+    </ul>
+
+    <h2>Sanktionen und Verzugszinsen</h2>
+    <ul>
+        <li>Verzug >5 Tage: Sollzins + 2 %-Pkt.</li>
+        <li>Mahnung: 10 € postalisch / 5 € digital.</li>
+        <li>2 nicht bezahlte Raten: Vertragsauflösung, Inkasso.</li>
+        <li>Vertragsstrafe nur bei Verletzung vertraglicher Pflichten.</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <h2>Kommunikation und Service HIGOBI Immobilien GMBH</h2>
+    <ul>
+        <li>Sämtliche Kommunikation zwischen Bank und Kunden erfolgt ausschließlich über HIGOBI Immobilien GMBH.</li>
+        <li>Vertrag und Anlagen werden als PDF via Telegram übermittelt.</li>
+        <li>Vermittlungsvergütung HIGOBI: fixe Servicepauschale {{ service_fee }} (kein Bankentgelt).</li>
+        <li>Auszahlung der Kreditmittel erfolgt streng erst nach Unterzeichnung des Vertrags und nach Zahlung der Vermittlungsvergütung ({{ service_fee }}).</li>
+        <li>Zahlungskoordinaten werden dem Kunden individuell durch den zuständigen HIGOBI-Manager mitgeteilt (keine Vorauszahlungen an Dritte).</li>
+    </ul>
+
+    <h2>Zusammenfassung (Schätzung)</h2>
+    <table class="summary-table">
+        <tr><th>Nettodarlehen</th><td>{{ amount }}</td></tr>
+        <tr><th>Geschätzte Zinsen (Laufzeit)</th><td>{{ total_interest }}</td></tr>
+        <tr><th>Einmalige Kosten</th><td>0 €</td></tr>
+        <tr><th>Einzugskosten</th><td>0 €</td></tr>
+        <tr><th>Gesamtschuld (Schätzung)</th><td><b>{{ total_debt }}</b></td></tr>
+        <tr><th>Laufzeit</th><td>{{ term }} Monate</td></tr>
+    </table>
+
+    <h2>Unterschriften</h2>
+    <table class="signatures">
+        <tr>
+            <td>
+                <div class="sig-line"></div>
+                Unterschrift Kunde
+            </td>
+            <td>
+                <div class="sig-line">
+                    <img src="file://{{ sign_bank }}" class="sig-img">
+                </div>
+                Unterschrift Vertreter<br>Bank
+            </td>
+            <td>
+                <div class="sig-line">
+                    <img src="file://{{ sign_c2g }}" class="sig-img">
+                </div>
+                Unterschrift Vertreter<br>HIGOBI Immobilien GMBH
+            </td>
+        </tr>
+    </table>
+
+    <div class="page-break"></div>
+    
+    <h2>Anlage: Vorläufiger Tilgungsplan</h2>
+    <div class="subtext" style="margin-bottom: 10px;">Der nachfolgende Tilgungsplan ist eine modellhafte Darstellung.</div>
+    
+    <table class="schedule-table">
+        <thead>
+            <tr>
+                <th width="8%">Nr.</th>
+                <th width="15%" style="text-align:center;">Datum</th>
+                <th width="19%">Rate</th>
+                <th width="19%">Zinsen</th>
+                <th width="19%">Tilgung</th>
+                <th width="20%">Restschuld</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in schedule %}
+            <tr>
+                <td style="text-align:center;">{{ row.nr }}</td>
+                <td style="text-align:center;">{{ row.date }}</td>
+                <td><b>{{ row.payment }}</b></td>
+                <td style="color: #d9534f;">{{ row.interest }}</td>
+                <td style="color: #5cb85c;">{{ row.principal }}</td>
+                <td style="font-weight: bold; color: #555;">{{ row.balance }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
